@@ -1,6 +1,8 @@
 # VisualAnalytics_50_postcrossing
 Visual Analytics project for postcrossing 2025
 
+First time running requires building the frontend, database setup and loading postcards before running the server
+
 ### Database
 python3 manage.py makemirgration
 
@@ -10,8 +12,13 @@ python3 manage.py migrate
 python3 manage.py runserver
 
 ### Update Frontend
-npm install / npm run build in Postcrossing/frontend
+python3 manage.py build_frontend
 
-move content from build folder into:
+if on Unix you might also need to run:
 
-    Postcrossing/backend/static/frontend (remember to delete old files there)
+    chmod +x build_and_sync_frontend.sh
+
+### Load and remove Postcards in Database from data folder
+python3 manage.py load_postcards
+
+python3 manage.py clear_postcards

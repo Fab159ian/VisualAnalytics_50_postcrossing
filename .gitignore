@@ -1,1 +1,32 @@
-.venv
+*/media/
+*/staticfiles/
+*/backend/static/frontend/
+
+# React node_modules and build outputs
+*/frontend/node_modules/
+*/frontend/build/
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Python/Django
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env
+.env.*
+/__pycache__/
+.venv/
+local_settings.py
