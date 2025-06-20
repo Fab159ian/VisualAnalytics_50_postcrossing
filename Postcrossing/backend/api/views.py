@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from django.http import HttpResponse
 from django.http import JsonResponse
 from .models import Postcard
@@ -8,6 +8,8 @@ import random
 class PostcardViewSet(viewsets.ModelViewSet):
     queryset = Postcard.objects.all()
     serializer_class = PostcardSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['country'] #TODO set to correct fields from data analysis
 
 def debug_postcards(request):
     postcards = Postcard.objects.order_by('?')[:40]

@@ -36,5 +36,6 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "/static/frontend" 
+  "homepage": "/static/frontend",
+  "proxy": "http://127.0.0.1:8000"
 }

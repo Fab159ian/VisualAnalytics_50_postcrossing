@@ -3,3 +3,4 @@ djangorestframework
 markdown
 django-cors-headers
 Pillow
+django-filter
