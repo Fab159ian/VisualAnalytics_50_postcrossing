@@ -1,0 +1,27 @@
+COMPLETE POSTCARD ANALYSIS SUMMARY
+==================================================
+
+Dataset Information:
+- Total images: 2,305
+- Feature dimensions: 2,048
+
+Topic Clustering:
+- Number of clusters: 10
+- Silhouette score: 0.015
+
+Color Clustering:
+- Number of clusters: 6
+- Images analyzed: 2,305
+
+PCA Analysis:
+- 2D variance explained: 0.108
+- 50D variance explained: 0.570
+
+Files Generated:
+- topic_clustered_dataset: complete_dataset_with_topic_clusters.csv
+- color_clusters: color_clusters_complete.csv
+- recommendations: comprehensive_recommendations.csv
+- pca_results: pca_analysis_results.csv
+- topic_clusters_report: topic_clusters_detailed_report.csv
+- color_clusters_report: color_clusters_detailed_report.csv
+- pca_analysis_report: pca_analysis_detailed_report.csv
