@@ -1,0 +1,7 @@
+Pillow
+torch
+nltk
+transformers
+numpy
+pandas
+ipywidgets
