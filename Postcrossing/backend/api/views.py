@@ -13,7 +13,7 @@ class PostcardViewSet(viewsets.ModelViewSet):
 
 def debug_postcards(request):
     postcards = Postcard.objects.order_by('?')[:40]
-    return HttpResponse('<br>'.join([f"{p.image.url} - {p.country}" for p in postcards]))
+    return HttpResponse('<br>'.join([f"{p.image.url} - {p.country} - {p.topic_cluster.label} - {p.color_cluster.label}" for p in postcards]))
 
 def random_postcard(request):
     postcard = Postcard.objects.order_by('?').first()
@@ -21,6 +21,8 @@ def random_postcard(request):
         return JsonResponse({
             'image_url': postcard.image.url,
             'title': postcard.title,
-            'country': postcard.country
+            'country': postcard.country,
+            'topic_cluster_label': postcard.topic_cluster.label,
+            'color_cluster_label': postcard.color_cluster.label
         })
     return JsonResponse({'error': 'No postcards available'}, status=404)

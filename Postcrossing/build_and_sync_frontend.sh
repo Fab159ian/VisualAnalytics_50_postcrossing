@@ -5,8 +5,21 @@ FRONTEND_DIR=frontend
 BUILD_DIR=$FRONTEND_DIR/build
 TARGET_DIR=backend/static/frontend
 
-echo "Building React frontend..."
+echo "Checking dependencies..."
 cd $FRONTEND_DIR
+
+# Run npm install if node_modules doesn't exist
+if [ ! -d "node_modules" ]; then
+    echo "node_modules not found. Running npm install..."
+    npm install
+
+    if [ $? -ne 0 ]; then
+        echo "npm install failed. Aborting."
+        exit 1
+    fi
+fi
+
+echo "Building React frontend..."
 npm run build
 
 # Check if build was successful

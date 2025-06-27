@@ -4,3 +4,4 @@ markdown
 django-cors-headers
 Pillow
 django-filter
+pandas

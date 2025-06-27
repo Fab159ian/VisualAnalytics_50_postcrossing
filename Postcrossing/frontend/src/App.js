@@ -33,6 +33,8 @@ function App() {
         onClick={fetchRandomPostcard}
       />
       <p>Country: {postcard.country}</p>
+      <p>Topic: {postcard.topic_cluster_label}</p>
+      <p>Color: {postcard.color_cluster_label}</p>
       <p><small>Click the image to load another postcard</small></p>
     </div>
   );
