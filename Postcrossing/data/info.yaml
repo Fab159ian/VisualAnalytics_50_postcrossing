@@ -1,0 +1,73 @@
+---
+CSV_files:
+- name: merged_labels.csv
+  columns: 
+    - filename
+    - original_name
+    - label
+    - country_code
+  usage: "maps the merged name to the original name"
+- name: clustering/cluster_topic_summeries.csv
+  columns: 
+    - topic_cluster
+    - top_tags
+    - topic_name
+  usage: "gives the top tags of all images in a cluster as well as a manual name for loading in the backend"
+- name: clustering/color_clusters.csv
+  columns:
+    - image_id
+    - filename
+    - dataset_source
+    - label
+    - country_code
+    - avg_red
+    - avg_green
+    - avg_blue
+    - brightness
+    - saturation
+    - red_tendency
+    - blue_tendency
+    - image_processed
+    - color_cluster
+    - color_name
+  usage: "Full information of the color clustering, important info are the red, green, blue values, and the color cluster with its name"
+- name: clustering/color_clusters_summary.csv
+  columns:
+    - color_cluster
+    - color_name
+    - image_count
+    - percentage
+    - avg_red
+    - avg_green
+    - avg_blue
+    - avg_brightness
+    - avg_saturation
+    - top_country
+    - anonymous_count
+    - countries_count
+  usage: "Summary of the information of all images in the individual clusters"
+- name: clustering/comprehensive_recommendations.csv
+  columns:
+    - image_id
+    - filename
+    - dataset_source
+    - label
+    - country_code
+    - topic_cluster
+    - topic_similar_images
+    - topic_similarity_count
+    - color_cluster
+    - color_similar_images
+    - color_similarity_count
+    - country_similar_images
+    - country_similarity_count
+    - total_similar_images
+    - recommendation_quality
+  usage: "Information of the topic clusters, color clusters and some additional similarity info for each individual image."
+- name: clustering/postcard_tags_gpu.csv
+  columns:
+    - filename
+    - caption
+    - tags
+  usage: "contains the caption and extracted tags of each image with the naming in merged format"
+...
