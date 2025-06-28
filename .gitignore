@@ -1,6 +1,10 @@
+# Media and static files
+media/
 */media/
+staticfiles/
 */staticfiles/
-*/backend/static/frontend/
+backend/static/frontend/static/
+*/backend/static/frontend/static/
 
 # React node_modules and build outputs
 */frontend/node_modules/
@@ -18,16 +22,24 @@ Thumbs.db
 
 # Python/Django
 *.py[cod]
-*.sqlite3
-*.log
-*.pot
 *.pyc
 *.pyo
 *.pyd
+*.sqlite3
+db.sqlite3
+*.log
+*.pot
+__pycache__/
+*/__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment files
 *.env
 .env
 .env.*
-/__pycache__/
 .venv/
 venv/
 local_settings.py
