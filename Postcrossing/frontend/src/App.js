@@ -1,8 +1,9 @@
+import React, { useEffect, useState } from 'react';
+import Dashboard from './pages/Dashboard';
 import './App.css';
-import React, { useEffect, useState, useCallback } from 'react';
 
-//TODO Simply displays random postcard from the API backend for testing, replace with proper frontend code later
 function App() {
+  /*
   const [postcard, setPostcard] = useState(null);
   const [similarPostcards, setSimilarPostcards] = useState([]);
   const [colorPostcards, setColorPostcards] = useState([]);
@@ -109,7 +110,7 @@ function App() {
     <div style={{ padding: '20px'}}>
       <h2>Random Postcard</h2>
       
-      {/* Main postcard */}
+      {/* Main postcard *//*}
       <div style={{ marginBottom: '30px' }}>
         <img
           src={postcard.image_url}
@@ -134,7 +135,7 @@ function App() {
         </p>
       </div>
 
-      {/* Similar postcards */}
+      {/* Similar postcards *//*}
       {similarPostcards.length > 0 ? (
         <div>
           <h3>Similar Postcards ({similarPostcards.length})</h3>
@@ -178,7 +179,7 @@ function App() {
         </div>
       )}
 
-      {/* Color-based search */}
+      {/* Color-based search *//*}
       <div style={{ marginTop: '40px', borderTop: '2px solid #eee', paddingTop: '20px' }}>
         <h3>Find Postcards by Color</h3>
         <form onSubmit={fetchColorSimilarPostcards} style={{ marginBottom: '20px' }}>
@@ -253,7 +254,7 @@ function App() {
           </button>
         </form>
 
-        {/* Color-based results */}
+        {/* Color-based results *//*}
         {colorPostcards.length > 0 && (
           <div>
             <h4>Color-Similar Postcards ({colorPostcards.length})</h4>
@@ -289,6 +290,8 @@ function App() {
       </div>
     </div>
   );
+  */
+  return <Dashboard />;
 }
 
 export default App;
