@@ -1,13 +1,13 @@
 // src/components/SimilarPostcards.jsx
 import React, { useEffect, useState } from 'react';
-import { fetchSimilar } from '../services/api';
+import { fetchSimilarPostcards } from '../services/api';
 
 const SimilarPostcards = ({ postcardId }) => {
   const [similar, setSimilar] = useState([]);
 
   useEffect(() => {
     if (postcardId) {
-      fetchSimilar(postcardId).then(res => setSimilar(res.data));
+      fetchSimilarPostcards(postcardId).then(res => setSimilar(res.data));
     }
   }, [postcardId]);
 

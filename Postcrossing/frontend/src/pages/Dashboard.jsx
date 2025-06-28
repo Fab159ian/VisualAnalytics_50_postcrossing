@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { fetchPostcards } from '../services/api';
+import { fetchAllPostcards } from '../services/api';
 import PostcardDisplay from '../components/PostcardDisplay';
 import TagSearchBar from '../components/TagSearchBar';
 import TagFilters from '../components/TagFilters';
@@ -14,7 +14,7 @@ const Dashboard = () => {
   const [selectedPostcard, setSelectedPostcard] = useState(null);
 
   useEffect(() => {
-    fetchPostcards().then(res => setPostcards(res.data));
+    fetchAllPostcards().then(res => setPostcards(res.data));
   }, []);
 
 

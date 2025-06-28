@@ -1,9 +1,10 @@
 from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import F
-from .models import Postcard
+from .models import Postcard, Tag
 from .serializers import PostcardSerializer
 import random
 import math
@@ -11,8 +12,15 @@ import math
 class PostcardViewSet(viewsets.ModelViewSet):
     queryset = Postcard.objects.all()  # type: ignore
     serializer_class = PostcardSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['country'] #TODO set to correct fields from data analysis
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['country', 
+                        'topic_cluster__cluster_id', 'color_cluster__cluster_id',
+                        'topic_cluster__label', 'color_cluster__label',
+                        'tags__name']
+    search_fields = ['title', 'country', 'topic_cluster__label', 'color_cluster__label']
+    ordering_fields = ['title', 'country', 'avg_brightness', 'avg_saturation', 
+                      'avg_color_red', 'avg_color_green', 'avg_color_blue',
+                      'red_tendency', 'blue_tendency']
 
 def debug_postcards(request):
     postcards = Postcard.objects.order_by('?')[:40]  # type: ignore
@@ -51,8 +59,18 @@ def get_postcard(request):
         return JsonResponse({'error': 'No postcards available'}, status=404)
 
 def similar_postcards(request, postcard_id):
+    # Get limit parameter, default to 10, max 15
+    try:
+        limit = min(int(request.GET.get('limit', 10)), 15)
+    except (ValueError, TypeError):
+        limit = 10
+    
     postcard = get_object_or_404(Postcard, id=postcard_id)
-    similar = postcard.similar_postcards.all()[:10]  # type: ignore
+    similar = list(postcard.similar_postcards.all())  # Convert to list to get length
+    
+    # Limit the results
+    similar = similar[:limit]
+    
     return JsonResponse({
         'postcard': {
             'id': postcard.id,
@@ -69,7 +87,10 @@ def similar_postcards(request, postcard_id):
             'country': p.country,
             'topic_cluster_label': p.topic_cluster.label,  # type: ignore
             'color_cluster_label': p.color_cluster.label  # type: ignore
-        } for p in similar]
+        } for p in similar],
+        'requested_limit': limit,
+        'actual_count': len(similar),
+        'total_available': postcard.similar_postcards.count()  # type: ignore
     })
 
 def color_similar_postcards(request):
@@ -78,6 +99,12 @@ def color_similar_postcards(request):
     green = request.GET.get('green', 0)
     blue = request.GET.get('blue', 0)
     saturation = request.GET.get('saturation', 0)
+    
+    # Get limit parameter, default to 10, max 50
+    try:
+        limit = min(int(request.GET.get('limit', 10)), 50)
+    except (ValueError, TypeError):
+        limit = 10
     
     try:
         red = float(red)
@@ -102,9 +129,9 @@ def color_similar_postcards(request):
         )
         postcards_with_distance.append((postcard, distance))
     
-    # Sort by distance and get top 10
+    # Sort by distance and get top results
     postcards_with_distance.sort(key=lambda x: x[1])
-    closest_postcards = postcards_with_distance[:10]
+    closest_postcards = postcards_with_distance[:limit]
     
     return JsonResponse({
         'query_colors': {
@@ -127,5 +154,17 @@ def color_similar_postcards(request):
                 'blue': float(postcard.avg_color_blue),
                 'saturation': float(postcard.avg_saturation)
             }
-        } for postcard, distance in closest_postcards]
+        } for postcard, distance in closest_postcards],
+        'requested_limit': limit,
+        'actual_count': len(closest_postcards),
+        'total_available': len(postcards_with_distance)
+    })
+
+def get_tags(request):
+    tags = Tag.objects.all()  # type: ignore
+    return JsonResponse({
+        'tags': [{
+            'id': tag.id,
+            'name': tag.name
+        } for tag in tags]
     })
