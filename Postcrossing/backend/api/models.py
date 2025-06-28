@@ -33,4 +33,4 @@ class Postcard(models.Model):
     similar_postcards = models.ManyToManyField("self", blank=True)
 
     def __str__(self):
-        return f"Postcard: {self.title}, {self.country}, color: {self.color_cluster.label}, topic: {self.topic_cluster.label}"
+        return f"Postcard: {self.title}, {self.country}, color: {self.color_cluster.label}, topic: {self.topic_cluster.label}"  # type: ignore
