@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { useEffect, useState, useCallback } from 'react';
 
@@ -13,12 +12,45 @@ function App() {
     blue: '',
     saturation: ''
   });
-
-  const fetchRandomPostcard = useCallback(() => {
-    fetch('/api/random-postcard/')
+  
+  const fetchSimilarPostcards = useCallback((postcardId) => {
+    console.log('Fetching similar postcards for ID:', postcardId);
+    fetch(`/api/similar-postcards/${postcardId}/`)
+    .then(res => res.json())
+    .then(data => {
+      console.log('Similar postcards data:', data);
+      // Randomly select 3 postcards from the 10 similar postcards
+      const allSimilar = data.similar_postcards;
+      const shuffled = [...allSimilar].sort(() => 0.5 - Math.random());
+      setSimilarPostcards(shuffled.slice(0, 3));
+    })
+    .catch(error => {
+      console.error('Error fetching similar postcards:', error);
+      setSimilarPostcards([]);
+    });
+  }, []);
+  
+    const fetchRandomPostcard = useCallback(() => {
+      fetch('/api/get-postcard/')
+        .then(res => res.json())
+        .then(data => {
+          console.log('Random postcard data:', data);
+          if (!data.error) {
+            setPostcard(data);
+            // Fetch similar postcards for this postcard
+            fetchSimilarPostcards(data.id);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching random postcard:', error);
+        });
+    }, [fetchSimilarPostcards]);
+  
+  const fetchPostcardById = useCallback((postcardId) => {
+    fetch(`/api/get-postcard/?id=${postcardId}`)
       .then(res => res.json())
       .then(data => {
-        console.log('Random postcard data:', data);
+        console.log('Postcard data:', data);
         if (!data.error) {
           setPostcard(data);
           // Fetch similar postcards for this postcard
@@ -26,25 +58,11 @@ function App() {
         }
       })
       .catch(error => {
-        console.error('Error fetching random postcard:', error);
+        console.error('Error fetching postcard:', error);
       });
-  }, []);
+  }, [fetchSimilarPostcards]);
 
-  const fetchSimilarPostcards = useCallback((postcardId) => {
-    console.log('Fetching similar postcards for ID:', postcardId);
-    fetch(`/api/similar-postcards/${postcardId}/`)
-      .then(res => res.json())
-      .then(data => {
-        console.log('Similar postcards data:', data);
-        setSimilarPostcards(data.similar_postcards.slice(0, 3)); // Get first 3 similar postcards
-      })
-      .catch(error => {
-        console.error('Error fetching similar postcards:', error);
-        setSimilarPostcards([]);
-      });
-  }, []);
-
-  const fetchColorSimilarPostcards = (e) => {
+  const fetchColorSimilarPostcards = useCallback((e) => {
     e.preventDefault();
     const { red, green, blue, saturation } = colorValues;
     
@@ -67,14 +85,18 @@ function App() {
         console.error('Error fetching color similar postcards:', error);
         setColorPostcards([]);
       });
-  };
+  }, [colorValues]);
 
-  const handleColorChange = (field, value) => {
+  const handleColorChange = useCallback((field, value) => {
     setColorValues(prev => ({
       ...prev,
       [field]: value
     }));
-  };
+  }, []);
+
+  const handleSimilarPostcardClick = useCallback((postcardId) => {
+    fetchPostcardById(postcardId);
+  }, [fetchPostcardById]);
 
   // Fetch once on mount
   useEffect(() => {
@@ -84,7 +106,7 @@ function App() {
   if (!postcard) return <p>Loading...</p>;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px'}}>
       <h2>Random Postcard</h2>
       
       {/* Main postcard */}
@@ -131,14 +153,19 @@ function App() {
                     maxWidth: '200px', 
                     maxHeight: '150px',
                     border: '1px solid #ccc',
-                    borderRadius: '4px'
+                    borderRadius: '4px',
+                    cursor: 'pointer'
                   }}
+                  onClick={() => handleSimilarPostcardClick(similar.id)}
                 />
                 <p style={{ margin: '5px 0', fontSize: '14px' }}>
                   <strong>{similar.country}</strong>
                 </p>
                 <p style={{ margin: '2px 0', fontSize: '12px', color: '#666' }}>
                   {similar.topic_cluster_label}
+                </p>
+                <p style={{ margin: '2px 0', fontSize: '10px', color: '#999' }}>
+                  <small>Click to view</small>
                 </p>
               </div>
             ))}
@@ -157,7 +184,7 @@ function App() {
         <form onSubmit={fetchColorSimilarPostcards} style={{ marginBottom: '20px' }}>
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(5, 1fr)', 
+            gridTemplateColumns: 'repeat(4, 1fr)', 
             gap: '10px',
             maxWidth: '600px',
             marginBottom: '15px'

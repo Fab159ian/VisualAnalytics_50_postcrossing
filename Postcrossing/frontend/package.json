@@ -15,6 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "watch": "react-scripts build && fswatch -o src/ | xargs -n1 -I{} react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

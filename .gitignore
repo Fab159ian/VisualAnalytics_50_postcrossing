@@ -3,8 +3,8 @@ media/
 */media/
 staticfiles/
 */staticfiles/
-backend/static/frontend/static/
-*/backend/static/frontend/static/
+backend/static/frontend/
+*/backend/static/frontend/
 
 # React node_modules and build outputs
 */frontend/node_modules/
