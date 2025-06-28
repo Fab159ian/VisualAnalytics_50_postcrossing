@@ -2,9 +2,11 @@ from rest_framework import viewsets, filters
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import F
 from .models import Postcard
 from .serializers import PostcardSerializer
 import random
+import math
 
 class PostcardViewSet(viewsets.ModelViewSet):
     queryset = Postcard.objects.all()  # type: ignore
@@ -49,4 +51,62 @@ def similar_postcards(request, postcard_id):
             'topic_cluster_label': p.topic_cluster.label,  # type: ignore
             'color_cluster_label': p.color_cluster.label  # type: ignore
         } for p in similar]
+    })
+
+def color_similar_postcards(request):
+    # Get query parameters
+    red = request.GET.get('red', 0)
+    green = request.GET.get('green', 0)
+    blue = request.GET.get('blue', 0)
+    saturation = request.GET.get('saturation', 0)
+    
+    try:
+        red = float(red)
+        green = float(green)
+        blue = float(blue)
+        saturation = float(saturation)
+    except ValueError:
+        return JsonResponse({'error': 'Invalid color values. All values must be numbers.'}, status=400)
+    
+    # Get all postcards TODO if it takes too long, we can filter by color cluster
+    postcards = Postcard.objects.all()  # type: ignore
+    
+    # Calculate color distance for each postcard
+    postcards_with_distance = []
+    for postcard in postcards:
+        # Calculate Euclidean distance in 5D space (RGB + brightness + saturation)
+        distance = math.sqrt(
+            (red - float(postcard.avg_color_red)) ** 2 +
+            (green - float(postcard.avg_color_green)) ** 2 +
+            (blue - float(postcard.avg_color_blue)) ** 2 +
+            (saturation - float(postcard.avg_saturation)) ** 2
+        )
+        postcards_with_distance.append((postcard, distance))
+    
+    # Sort by distance and get top 10
+    postcards_with_distance.sort(key=lambda x: x[1])
+    closest_postcards = postcards_with_distance[:10]
+    
+    return JsonResponse({
+        'query_colors': {
+            'red': red,
+            'green': green,
+            'blue': blue,
+            'saturation': saturation
+        },
+        'closest_postcards': [{
+            'id': postcard.id,
+            'title': postcard.title,
+            'image_url': postcard.image.url,
+            'country': postcard.country,
+            'topic_cluster_label': postcard.topic_cluster.label,  # type: ignore
+            'color_cluster_label': postcard.color_cluster.label,  # type: ignore
+            'distance': round(distance, 4),
+            'postcard_colors': {
+                'red': float(postcard.avg_color_red),
+                'green': float(postcard.avg_color_green),
+                'blue': float(postcard.avg_color_blue),
+                'saturation': float(postcard.avg_saturation)
+            }
+        } for postcard, distance in closest_postcards]
     })

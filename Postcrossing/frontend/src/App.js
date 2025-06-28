@@ -1,13 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 //TODO Simply displays random postcard from the API backend for testing, replace with proper frontend code later
 function App() {
   const [postcard, setPostcard] = useState(null);
   const [similarPostcards, setSimilarPostcards] = useState([]);
+  const [colorPostcards, setColorPostcards] = useState([]);
+  const [colorValues, setColorValues] = useState({
+    red: '',
+    green: '',
+    blue: '',
+    saturation: ''
+  });
 
-  const fetchRandomPostcard = () => {
+  const fetchRandomPostcard = useCallback(() => {
     fetch('/api/random-postcard/')
       .then(res => res.json())
       .then(data => {
@@ -21,9 +28,9 @@ function App() {
       .catch(error => {
         console.error('Error fetching random postcard:', error);
       });
-  };
+  }, []);
 
-  const fetchSimilarPostcards = (postcardId) => {
+  const fetchSimilarPostcards = useCallback((postcardId) => {
     console.log('Fetching similar postcards for ID:', postcardId);
     fetch(`/api/similar-postcards/${postcardId}/`)
       .then(res => res.json())
@@ -35,12 +42,44 @@ function App() {
         console.error('Error fetching similar postcards:', error);
         setSimilarPostcards([]);
       });
+  }, []);
+
+  const fetchColorSimilarPostcards = (e) => {
+    e.preventDefault();
+    const { red, green, blue, saturation } = colorValues;
+    
+    if (!red || !green || !blue || !saturation) {
+      alert('Please fill in all color values');
+      return;
+    }
+
+    const queryString = `red=${red}&green=${green}&blue=${blue}&saturation=${saturation}`;
+    
+    fetch(`/api/color-similar/?${queryString}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log('Color similar postcards data:', data);
+        if (data.closest_postcards) {
+          setColorPostcards(data.closest_postcards.slice(0, 5)); // Get first 5 postcards
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching color similar postcards:', error);
+        setColorPostcards([]);
+      });
+  };
+
+  const handleColorChange = (field, value) => {
+    setColorValues(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   // Fetch once on mount
   useEffect(() => {
     fetchRandomPostcard();
-  }, []);
+  }, [fetchRandomPostcard]);
 
   if (!postcard) return <p>Loading...</p>;
 
@@ -68,6 +107,9 @@ function App() {
           <p><strong>Color:</strong> {postcard.color_cluster_label}</p>
           <p><strong>ID:</strong> {postcard.id}</p>
         </div>
+        <p style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
+          <small>Click the main image to load another random postcard</small>
+        </p>
       </div>
 
       {/* Similar postcards */}
@@ -109,9 +151,115 @@ function App() {
         </div>
       )}
 
-      <p style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-        <small>Click the main image to load another random postcard</small>
-      </p>
+      {/* Color-based search */}
+      <div style={{ marginTop: '40px', borderTop: '2px solid #eee', paddingTop: '20px' }}>
+        <h3>Find Postcards by Color</h3>
+        <form onSubmit={fetchColorSimilarPostcards} style={{ marginBottom: '20px' }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(5, 1fr)', 
+            gap: '10px',
+            maxWidth: '600px',
+            marginBottom: '15px'
+          }}>
+            <div>
+              <label>Red (0-1):</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                max="1"
+                value={colorValues.red}
+                onChange={(e) => handleColorChange('red', e.target.value)}
+                style={{ width: '100%', padding: '5px' }}
+              />
+            </div>
+            <div>
+              <label>Green (0-1):</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                max="1"
+                value={colorValues.green}
+                onChange={(e) => handleColorChange('green', e.target.value)}
+                style={{ width: '100%', padding: '5px' }}
+              />
+            </div>
+            <div>
+              <label>Blue (0-1):</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                max="1"
+                value={colorValues.blue}
+                onChange={(e) => handleColorChange('blue', e.target.value)}
+                style={{ width: '100%', padding: '5px' }}
+              />
+            </div>
+            <div>
+              <label>Saturation (0-1):</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                max="1"
+                value={colorValues.saturation}
+                onChange={(e) => handleColorChange('saturation', e.target.value)}
+                style={{ width: '100%', padding: '5px' }}
+              />
+            </div>
+          </div>
+          <button 
+            type="submit"
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Find Similar Postcards
+          </button>
+        </form>
+
+        {/* Color-based results */}
+        {colorPostcards.length > 0 && (
+          <div>
+            <h4>Color-Similar Postcards ({colorPostcards.length})</h4>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(5, 1fr)', 
+              gap: '15px',
+              maxWidth: '1000px'
+            }}>
+              {colorPostcards.map((postcard, index) => (
+                <div key={postcard.id} style={{ textAlign: 'center' }}>
+                  <img
+                    src={postcard.image_url}
+                    alt={`Color similar postcard from ${postcard.country}`}
+                    style={{ 
+                      maxWidth: '150px', 
+                      maxHeight: '120px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px'
+                    }}
+                  />
+                  <p style={{ margin: '5px 0', fontSize: '12px' }}>
+                    <strong>{postcard.country}</strong>
+                  </p>
+                  <p style={{ margin: '2px 0', fontSize: '10px', color: '#666' }}>
+                    Distance: {postcard.distance}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
