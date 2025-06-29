@@ -1,0 +1,22 @@
+Frontend:
+    Must have:
+        Dropdown for cluster topic label selection
+        Dropdown for cluster color label selection
+        searchbar for tag selection
+            (backend will provide tag searching like postcard searching)
+            e.g fetchPostcards({ search: 'blue' }) -> fetchTags({ search: 'rock' })
+        move the "selected postcard" to above the search bar
+    If possible:
+        make dropdown searchable (e.g. fetchClusterLabel({ search: 'Lanscape' }))
+        color picker for red, green, blue, values
+            could be merged with tag request by including ids from color search
+                maybe service Convenience functions or special backend view if necessary here
+            right now always returns "limit" amount of postcards even if they are not that color 
+                (e.g filter for color cluster "Cool_Tones" and search for red postcards will return still mostly blue postcards)
+                if this should be changed to exclude postcards under a threshold of "redness" that can be change in the backend
+        allow clicking on "selected postcard" attribute/tags/cluster labels to set filter to that (or add in case of tags)
+        show fullscreen version of the "selected postcard" in some way (e.g. click on it)
+
+Backend:
+    add Tag filtering/searching, see if country can be added to the same searchbar
+    add Cluster label filtering for both color and topic

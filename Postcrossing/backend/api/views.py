@@ -13,7 +13,7 @@ class PostcardViewSet(viewsets.ModelViewSet):
     queryset = Postcard.objects.all()  # type: ignore
     serializer_class = PostcardSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['country', 
+    filterset_fields = ['id', 'country', 
                         'topic_cluster__cluster_id', 'color_cluster__cluster_id',
                         'topic_cluster__label', 'color_cluster__label',
                         'tags__name']
@@ -21,6 +21,10 @@ class PostcardViewSet(viewsets.ModelViewSet):
     ordering_fields = ['title', 'country', 'avg_brightness', 'avg_saturation', 
                       'avg_color_red', 'avg_color_green', 'avg_color_blue',
                       'red_tendency', 'blue_tendency']
+
+# TODO: add Tag filtering, see if country can be added to the same searchbar
+
+# TODO: add Cluster label filtering both color and topic
 
 def debug_postcards(request):
     postcards = Postcard.objects.order_by('?')[:40]  # type: ignore
@@ -114,7 +118,6 @@ def color_similar_postcards(request):
     except ValueError:
         return JsonResponse({'error': 'Invalid color values. All values must be numbers.'}, status=400)
     
-    # Get all postcards TODO if it takes too long, we can filter by color cluster
     postcards = Postcard.objects.all()  # type: ignore
     
     # Calculate color distance for each postcard
