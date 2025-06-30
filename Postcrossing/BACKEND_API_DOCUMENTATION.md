@@ -39,6 +39,41 @@ api.get('/tags/?search=landscape')
 ]
 ```
 
+### 1.1. Country Tags
+
+Country tags are automatically added to postcards during the loading process with the format `Country-{COUNTRY_CODE}` (e.g., `Country-UK`, `Country-US`, `Country-DE`).
+
+**Country Tag Examples:**
+```javascript
+// Get all country tags
+fetchAllCountryTags()
+
+// Search for specific country tags
+searchCountryTags('UK')  // Returns tags like "Country-UK"
+searchCountryTags('US')  // Returns tags like "Country-US"
+
+// Search for any country tags
+searchTags('Country-')   // Returns all country tags
+```
+
+**Response:**
+```json
+[
+  {
+    "id": 101,
+    "name": "Country-UK"
+  },
+  {
+    "id": 102,
+    "name": "Country-US"
+  },
+  {
+    "id": 103,
+    "name": "Country-DE"
+  }
+]
+```
+
 ### 2. Topic Cluster API
 
 **Endpoint:** `GET /api/topic-clusters/`
@@ -280,6 +315,59 @@ const findLandscapeBlueNaturePostcards = async () => {
   console.log(`Found ${results.length} landscape blue nature postcards`);
   return results;
 };
+
+// Usage example with country tags:
+const findUKLandscapePostcards = async () => {
+  const results = await filterByClustersAndTags(
+    5,                    // Topic cluster ID for "Landscape"
+    null,                 // No color cluster filter
+    ['Country-UK', 'nature']  // Country and nature tags
+  );
+  
+  console.log(`Found ${results.length} UK landscape nature postcards`);
+  return results;
+};
+```
+
+### Example 1.1: Country-Specific Filtering
+
+This example shows how to filter postcards by specific countries using country tags:
+
+```javascript
+// Filter postcards by country and other criteria
+const filterByCountryAndCriteria = async (countryCode, additionalTags = [], topicClusterId = null) => {
+  const filters = {};
+  
+  // Add country tag filter
+  const countryTag = `Country-${countryCode}`;
+  filters['tags__name'] = [countryTag, ...additionalTags];
+  
+  // Add topic cluster filter if specified
+  if (topicClusterId) {
+    filters['topic_cluster__cluster_id'] = topicClusterId;
+  }
+  
+  try {
+    const response = await fetchPostcards(filters);
+    return response.data;
+  } catch (error) {
+    console.error('Error filtering postcards by country:', error);
+    return [];
+  }
+};
+
+// Usage examples:
+const findUSBluePostcards = async () => {
+  return await filterByCountryAndCriteria('US', ['blue'], null);
+};
+
+const findGermanLandscapePostcards = async () => {
+  return await filterByCountryAndCriteria('DE', ['landscape'], 5); // 5 = landscape topic cluster
+};
+
+const findAllUKPostcards = async () => {
+  return await filterByCountryAndCriteria('UK', [], null);
+};
 ```
 
 ### Example 2: Color Similarity + Tag Filtering
@@ -339,6 +427,20 @@ const findBlueNaturePostcards = async () => {
   );
   
   console.log(`Found ${results.length} blue nature postcards similar to sky blue`);
+  return results;
+};
+
+// Usage example with country tags: Find UK postcards similar to sunset colors
+const findUKSunsetPostcards = async () => {
+  const results = await filterColorSimilarByTags(
+    0.9,                  // High red for sunset
+    0.4,                  // Medium green
+    0.2,                  // Low blue
+    0.8,                  // High saturation
+    ['Country-UK', 'sunset', 'landscape']  // UK country tag + other tags
+  );
+  
+  console.log(`Found ${results.length} UK sunset landscape postcards`);
   return results;
 };
 ```

@@ -86,6 +86,22 @@ class Command(BaseCommand):
                 }
             )
 
+        # 2.5. Add country tags to all postcards
+        if debug:
+            print("Adding country tags...")
+        country_tag_count = 0
+        for postcard in Postcard.objects.all():  # type: ignore
+            if postcard.country and postcard.country != 'UNKN':
+                country_tag_name = f"Country-{postcard.country}"
+                country_tag, created = Tag.objects.get_or_create(name=country_tag_name)  # type: ignore
+                postcard.tags.add(country_tag)
+                if created and debug:
+                    country_tag_count += 1
+                    print(f"Created country tag: {country_tag_name}")
+        
+        if debug:
+            print(f"Created {country_tag_count} unique country tags")
+
         # 3. Assign tags
         tag_df = pd.read_csv(os.path.join(base_path, 'postcard_tags_gpu.csv'))
         merged_df = pd.read_csv(os.path.join(settings.BASE_DIR, 'data', 'merged_labels.csv'), usecols=['filename', 'original_name'])  # type: ignore

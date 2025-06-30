@@ -17,6 +17,14 @@ export const fetchColorSimilarPostcards = (params) => api.get('/color-similar/',
 export const fetchTags = () => api.get('/tags/');
 export const searchTags = (searchTerm) => api.get(`/tags/?search=${encodeURIComponent(searchTerm)}`);
 
+// Country tag convenience functions
+export const searchCountryTags = (countryCode = '') => {
+  const searchTerm = countryCode ? `Country-${countryCode}` : 'Country-';
+  return api.get(`/tags/?search=${encodeURIComponent(searchTerm)}`);
+};
+
+export const fetchAllCountryTags = () => searchCountryTags();
+
 // Cluster endpoints
 export const fetchTopicClusters = (searchTerm = '') => {
   const params = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : '';
