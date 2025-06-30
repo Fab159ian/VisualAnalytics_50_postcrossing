@@ -4,8 +4,8 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import F
-from .models import Postcard, Tag
-from .serializers import PostcardSerializer
+from .models import Postcard, Tag, TopicCluster, ColorCluster
+from .serializers import PostcardSerializer, TagSerializer, TopicClusterSerializer, ColorClusterSerializer
 import random
 import math
 
@@ -22,9 +22,47 @@ class PostcardViewSet(viewsets.ModelViewSet):
                       'avg_color_red', 'avg_color_green', 'avg_color_blue',
                       'red_tendency', 'blue_tendency']
 
-# TODO: add Tag filtering, see if country can be added to the same searchbar
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Tag.objects.all()  # type: ignore
+    serializer_class = TagSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name']
+    ordering_fields = ['name']
+    
+    def get_queryset(self):
+        queryset = Tag.objects.all()  # type: ignore
+        search = self.request.query_params.get('search', None)
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+        return queryset.order_by('name')
 
-# TODO: add Cluster label filtering both color and topic
+class TopicClusterViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = TopicCluster.objects.all()  # type: ignore
+    serializer_class = TopicClusterSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['label', 'cluster_id']
+    ordering_fields = ['label', 'cluster_id']
+    
+    def get_queryset(self):
+        queryset = TopicCluster.objects.all()  # type: ignore
+        search = self.request.query_params.get('search', None)
+        if search:
+            queryset = queryset.filter(label__icontains=search)
+        return queryset.order_by('label')
+
+class ColorClusterViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = ColorCluster.objects.all()  # type: ignore
+    serializer_class = ColorClusterSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['label', 'cluster_id']
+    ordering_fields = ['label', 'cluster_id']
+    
+    def get_queryset(self):
+        queryset = ColorCluster.objects.all()  # type: ignore
+        search = self.request.query_params.get('search', None)
+        if search:
+            queryset = queryset.filter(label__icontains=search)
+        return queryset.order_by('label')
 
 def debug_postcards(request):
     postcards = Postcard.objects.order_by('?')[:40]  # type: ignore
@@ -164,6 +202,8 @@ def color_similar_postcards(request):
     })
 
 def get_tags(request):
+    # This function is now deprecated in favor of TagViewSet
+    # TODO: if not used remove it
     tags = Tag.objects.all()  # type: ignore
     return JsonResponse({
         'tags': [{

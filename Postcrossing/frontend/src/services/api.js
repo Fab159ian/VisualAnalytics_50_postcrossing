@@ -15,6 +15,18 @@ export const fetchColorSimilarPostcards = (params) => api.get('/color-similar/',
 
 // Tag endpoints
 export const fetchTags = () => api.get('/tags/');
+export const searchTags = (searchTerm) => api.get(`/tags/?search=${encodeURIComponent(searchTerm)}`);
+
+// Cluster endpoints
+export const fetchTopicClusters = (searchTerm = '') => {
+  const params = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : '';
+  return api.get(`/topic-clusters/${params}`);
+};
+
+export const fetchColorClusters = (searchTerm = '') => {
+  const params = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : '';
+  return api.get(`/color-clusters/${params}`);
+};
 
 // Postcard filtering using ViewSet (filter, search, ordering)
 export const fetchPostcards = (filters = {}) => {
