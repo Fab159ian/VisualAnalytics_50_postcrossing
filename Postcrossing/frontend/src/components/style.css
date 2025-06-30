@@ -92,3 +92,93 @@
 .reset-button:hover {
   background-color: #1e40af;
 }
+
+.postcard-container {
+  /* border: 1px solid #ccc; */
+  padding: 16px;
+  height: 400px;
+  overflow-y: auto;
+  /* width: 100%;
+  max-width: 1000px; */
+  margin: 0 auto;
+  height: 90%;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.loading {
+  text-align: center;
+  color: gray;
+}
+
+.postcard-flex-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.postcard-item {
+  width: calc(33.333% - 10px); /* 3 items per row with spacing */
+}
+
+.postcard-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+
+
+.dropdown-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #1e3a8a;
+}
+
+.dropdown-select {
+  padding: 0.5rem 1rem;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+  outline: none;
+  font-size: 1rem;
+  color: #1e3a8a;
+  width: 100%;
+  max-width: 300px;
+  background-color: white;
+  appearance: none; /* removes native arrow on some browsers */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='blue' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
+/* Optional: if you want a larger dropdown popup when user clicks */
+.dropdown-select option {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Makes long dropdown scrollable */
+.dropdown-select {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* For WebKit browsers */
+.similar-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.similar-scroll::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 3px;
+}
+.similar-scroll::-webkit-scrollbar-track {
+  background-color: #ddd;
+}
+

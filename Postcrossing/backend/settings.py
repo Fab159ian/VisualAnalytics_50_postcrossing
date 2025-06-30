@@ -42,7 +42,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 ROOT_URLCONF = 'backend.urls'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 TEMPLATES = [
     {

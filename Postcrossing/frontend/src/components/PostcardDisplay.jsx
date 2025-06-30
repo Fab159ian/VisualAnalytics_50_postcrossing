@@ -2,17 +2,23 @@ import React from 'react';
 import './style.css';
 
 const PostcardDisplay = ({ postcard }) => {
-  if (!postcard) {
-    return <div className="postcard-display">No postcard selected.</div>;
-  }
+  if (!postcard) return null;
 
   return (
     <div className="postcard-display">
-      <h2>Selected Postcard</h2>
-      <img src={postcard.image} alt="Selected Postcard" className="postcard-image" />
+      <img
+        src={postcard.image}
+        alt={postcard.title || "Selected Postcard"}
+        className="postcard-image"
+      />
       <div className="attributes">
-        <p><strong>Color:</strong> {postcard.color}</p>
-        <p><strong>Other Attributes:</strong> {postcard.attributes}</p>
+        <p><strong>Title:</strong> {postcard.title}</p>
+        <p><strong>Avg Brightness:</strong> {postcard.avg_brightness}</p>
+        <p><strong>Avg Color Red:</strong> {postcard.avg_color_red}</p>
+        <p><strong>Avg Color Green:</strong> {postcard.avg_color_green}</p>
+        <p><strong>Avg Color Blue:</strong> {postcard.avg_color_blue}</p>
+        <p><strong>Avg Saturation:</strong> {postcard.avg_saturation}</p>
+        <p><strong>Country:</strong> {postcard.country}</p>
       </div>
     </div>
   );

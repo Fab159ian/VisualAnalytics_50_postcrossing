@@ -3,7 +3,7 @@ import './style.css';
 
 const TagSearchBar = ({ onSearch, onReset }) => {
   const [searchTerm, setSearchTerm] = useState('');
-
+console.log(searchTerm,"searchTerm")
   const handleInputChange = (e) => setSearchTerm(e.target.value);
 
   const handleSearch = () => onSearch(searchTerm);
