@@ -11,7 +11,6 @@ Created for the Course Knowledge discovery and data mining 1 as group 54.
 - **Cluster-based Organization** - Topic and color clustering for intuitive navigation
 - **Country-based Filtering** - Filter postcards by country with automatic tagging
 - **Real-time Search** - Search across tags, titles, and cluster labels
-- **Responsive Design** - Modern UI that works on desktop and mobile
 
 ## 🏗️ Architecture
 
