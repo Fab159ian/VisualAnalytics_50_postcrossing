@@ -8,15 +8,19 @@ from .models import Postcard, Tag, TopicCluster, ColorCluster
 from .serializers import PostcardSerializer, TagSerializer, TopicClusterSerializer, ColorClusterSerializer
 import random
 import math
+import django_filters
+
+class PostcardFilter(django_filters.FilterSet):
+    class Meta:
+        model = Postcard
+        fields = ['id', 'country', 'topic_cluster__cluster_id', 'color_cluster__cluster_id', 'topic_cluster__label', 'color_cluster__label', 'tags__name']
+    id__in = django_filters.BaseInFilter(field_name='id', lookup_expr='in')
 
 class PostcardViewSet(viewsets.ModelViewSet):
     queryset = Postcard.objects.all()  # type: ignore
     serializer_class = PostcardSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['id', 'country', 
-                        'topic_cluster__cluster_id', 'color_cluster__cluster_id',
-                        'topic_cluster__label', 'color_cluster__label',
-                        'tags__name']
+    filterset_class = PostcardFilter
     search_fields = ['title', 'country', 'topic_cluster__label', 'color_cluster__label']
     ordering_fields = ['title', 'country', 'avg_brightness', 'avg_saturation', 
                       'avg_color_red', 'avg_color_green', 'avg_color_blue',
