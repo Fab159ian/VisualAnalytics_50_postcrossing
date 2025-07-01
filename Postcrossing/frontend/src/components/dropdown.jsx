@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.css";
 
-const Dropdown = ({ label, options, value, onChange, optionLabelKey = "title" }) => {
+const Dropdown = ({ label, options, value, onChange, optionLabelKey = "title", optionValueKey }) => {
   return (
     <div style={{ marginBottom: "1rem" }}>
       <label className="dropdown-label">{label}</label>
@@ -12,7 +12,7 @@ const Dropdown = ({ label, options, value, onChange, optionLabelKey = "title" })
       >
         <option value="">Select {label}</option>
         {options.map((opt) => (
-          <option key={opt.id} value={opt.id}>
+          <option key={opt.id} value={opt[optionValueKey || "id"]}>
             {opt[optionLabelKey]}
           </option>
         ))}

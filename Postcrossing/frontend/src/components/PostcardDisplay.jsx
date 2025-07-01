@@ -13,12 +13,9 @@ const PostcardDisplay = ({ postcard }) => {
       />
       <div className="attributes">
         <p><strong>Title:</strong> {postcard.title}</p>
-        <p><strong>Avg Brightness:</strong> {postcard.avg_brightness}</p>
-        <p><strong>Avg Color Red:</strong> {postcard.avg_color_red}</p>
-        <p><strong>Avg Color Green:</strong> {postcard.avg_color_green}</p>
-        <p><strong>Avg Color Blue:</strong> {postcard.avg_color_blue}</p>
-        <p><strong>Avg Saturation:</strong> {postcard.avg_saturation}</p>
         <p><strong>Country:</strong> {postcard.country}</p>
+        <p><strong>Topic Theme:</strong> {postcard.topic_cluster.label}</p>
+        <p><strong>Color Theme:</strong> {postcard.color_cluster.label}</p>
       </div>
     </div>
   );

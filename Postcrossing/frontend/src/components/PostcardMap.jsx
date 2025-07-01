@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './style.css'; // Import the CSS file
 
-const PostcardMap = ({ postcards = [] }) => {
+const PostcardMap = ({ postcards = [], onSelectPostcard }) => {
   console.log(postcards,"postcards")
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (postcards.length > 0) {
+    if (Array.isArray(postcards) && postcards.length > 0) {
       setLoading(false);
     }
   }, [postcards]);
@@ -26,6 +26,8 @@ const PostcardMap = ({ postcards = [] }) => {
                 src={p.image}
                 alt="Postcard"
                 className="postcard-image"
+                onClick={() => onSelectPostcard && onSelectPostcard(p.id)}
+                style={{ cursor: 'pointer' }}
               />
             </div>
           ))}

@@ -5,7 +5,7 @@ const ControlPanel = ({ onReset }) => {
   return (
     <div className="border p-4 mt-4">
       <button onClick={onReset} className="reset-button">
-        Reset
+        Reset All
       </button>
     </div>
   );

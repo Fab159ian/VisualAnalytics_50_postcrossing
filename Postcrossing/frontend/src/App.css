@@ -55,4 +55,25 @@
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.similar-postcards-row {
+  width: 100%;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  box-sizing: border-box;
+  min-height: 140px;
+  background: white;
+  z-index: 1;
+}
+
+.postcard-container {
+  padding: 16px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  margin: 0 auto;
+  height: auto;
+  min-height: 0;
 }

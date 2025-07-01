@@ -144,7 +144,7 @@ def color_similar_postcards(request):
     
     # Get limit parameter, default to 10, max 50
     try:
-        limit = min(int(request.GET.get('limit', 10)), 50)
+        limit = min(int(request.GET.get('limit', 10)), 500)
     except (ValueError, TypeError):
         limit = 10
     
